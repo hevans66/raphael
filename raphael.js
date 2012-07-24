@@ -4743,6 +4743,15 @@ window.Raphael.svg && function (R) {
                 container.appendChild(cnvs);
             }
         }
+
+        //these are custom additons from circuitlab to make a single
+        //group around all the elements
+        var g = $("g")
+        cnvs.appendChild(g)
+        cnvs = g
+        g.style && (g.style.webkitTapHighlightColor = "rgba(0,0,0,0)");
+        //end group modifications
+
         container = new R._Paper;
         container.width = width;
         container.height = height;
@@ -4790,7 +4799,7 @@ window.Raphael.svg && function (R) {
             s = cnvs.style,
             pos;
         try {
-            pos = cnvs.getScreenCTM() || cnvs.createSVGMatrix();
+            pos = cnvs.getScreenCTM() || cnvs.parentNode.createSVGMatrix(), 
         } catch (e) {
             pos = cnvs.createSVGMatrix();
         }
@@ -4827,6 +4836,13 @@ window.Raphael.svg && function (R) {
             this[i] = typeof this[i] == "function" ? R._removedFactory(i) : null;
         }
     };
+
+    //special functions added for circuitlab, assumes canvas is actually
+    //a group, not the svg element
+    R.prototype.setTransform = function (trans) {
+      $(this.canvas,{transform:trans});
+    }
+
     var setproto = R.st;
     for (var method in elproto) if (elproto[has](method) && !setproto[has](method)) {
         setproto[method] = (function (methodname) {
